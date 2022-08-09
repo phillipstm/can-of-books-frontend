@@ -6,8 +6,7 @@
  */
 import axios from "axios";
 import React from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+import { Carousel } from "react-bootstrap/Carousel";
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -17,19 +16,11 @@ class BestBooks extends React.Component {
     }
   }
 
-  class BookCarousel extends React.Component{
-    constructor(props){
-      super(props);
-      this.state = {
-
-      }
-    }
-  }
 
   /* TODO: Make a GET request to your API to fetch all the books from the database  */
   getBooks = async () => {
     try {
-      let bookData = await axios.get(`${REACT_APP_SERVER_KEY}books`);
+      let bookData = await axios.get(`${process.env.REACT_APP_SERVER_KEY}books`);
       this.setState({ bookData: bookData });
 
 
@@ -39,55 +30,31 @@ class BestBooks extends React.Component {
 
   }
   componentDidMount() {
-    this.get Books();
+    this.getBooks();
   }
 
   render() {
-    function bookData(props) {
-      const bookData = props.length > 0 &&
-      return (
-        class BookCarousel extends Component {
-          render() {
-              return (
-                  <Carousel>
-                      <div>
-                          <img src="assets/1.jpeg" />
-                          <p BestBooks="legend">Legend 1</p>
-                      </div>
-                      <div>
-                          <img src="assets/2.jpeg" />
-                          <p BestBooks="legend">Legend 2</p>
-                      </div>
-                      <div>
-                          <img src="assets/3.jpeg" />
-                          <p BestBooks="legend">Legend 3</p>
-                      </div>
-                  </Carousel>
-              );
-          }
-      });
-      
-      ReactDOM.render(<BookCarousel />, document.querySelector('.demo-carousel'));
-      // These are supposed to be dynamic, below component is not present here
-          <div BestBooks="carousel-item">
-          </div>
-        </div>
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<BestBooks bookData={bookData} />);
-
-      return (
-        <>
-          <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-
-          {this.state.books.length ? (
-            <p key={Books.id}>Book Carousel coming soon</p>
-          ) : (
-            <h3>No Books Found :(</h3>
-          )}
-        </>
-      )
+    let bookDisplay
+    if (this.state.books.length === 0) {
+      bookDisplay = <p>Sorry, the book collection is empty at this time.</p>
+    } else {
+      bookDisplay =
+        <Carousel>
+        {this.state.books.map(book => {
+          return(
+          <Carousel.Item>
+            <Carousel.Caption>
+              <h3>{book.title}</h3>
+              <p>{book.description}</p>
+              <p>{book.status}</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+          );
+        })}
+        </Carousel>
     }
+    return bookDisplay;
   }
 
+}
 export default BestBooks;
