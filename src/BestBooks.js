@@ -6,18 +6,21 @@
  */
 import axios from "axios";
 import React from "react";
-import { Carousel } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
+import BookItem from './BookItem';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: []
+      books: [],
+      showModal: false,
     }
   }
 
-
-  /* TODO: Make a GET request to your API to fetch all the books from the database  */
+  componentDidMount() {
+    this.getBooks();
+  }
   getBooks = async () => {
     try {
       let bookData = await axios.get(`${process.env.REACT_APP_SERVER_KEY}books`);
@@ -26,37 +29,41 @@ class BestBooks extends React.Component {
     } catch (error) {
       console.log('Error Message', error.message);
     }
-
   }
-  componentDidMount() {
-    this.getBooks();
+  updateBook = async (book) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER_KEY}books/${book._id}`
+      let updatedBook = await axios.put(url, book);
+      console.log(updatedBook);
+      let updatedArray = this.state.books.map(currentBook => currentBook._id === updatedBook.data._id ? updatedBook.data : currentBook);
+      this.setState({
+        books: updatedArray
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
   }
 
   render() {
-    let bookDisplay
-    console.log('bookdata', this.state.books);
+    return (
+      <main>
+        <Button onClick={this.handleShowModal}>Add New Book</Button>
+        {/* <CreateBook showModal={this.state.showModal} handleBookSubmit={this.handleBookSubmit} /> */}
+        <ListGroup>
+          {
+            this.state.books.length > 0 &&
+            this.state.books.map(book =>
+              <BookItem
+                book={book}
+                key={book._id}
+                deleteBook={this.deleteBook}
+                updateBook={this.updateBook}
+              />)
+          }
+        </ListGroup>
+      </main>
 
-    if (this.state.books.length === 0) {
-      bookDisplay = <p>Sorry, the book collection is empty at this time.</p>
-    } else {
-      bookDisplay =
-        <Carousel style={{ width: '250px', margin: 'auto' }}>
-          {this.state.books.map(book => {
-            return (
-              <Carousel.Item>
-                <img src='https://via.placeholder.com/200x300.png?text=Book+cover' alt="book cover" />
-                <Carousel.Caption>
-                  <h3>{book.title}</h3>
-                  <p>{book.description}</p>
-                  <p>{book.status}</p>
-                </Carousel.Caption>
-              </Carousel.Item>
-            );
-          })}
-        </Carousel>
-    }
-    return bookDisplay;
+    )
   }
-
 }
 export default BestBooks;

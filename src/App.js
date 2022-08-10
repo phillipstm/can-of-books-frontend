@@ -10,6 +10,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import './App.css'
 
 
 
@@ -30,7 +31,6 @@ class App extends React.Component {
               element={<Profile />}
             >
             </Route>
-            {/* PLACEHOLDER: add a route with a path of '/about' that renders the `About` component */}
           </Routes>
           <Footer />
         </Router>
