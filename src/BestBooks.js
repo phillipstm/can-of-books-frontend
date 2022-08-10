@@ -30,6 +30,18 @@ class BestBooks extends React.Component {
       console.log('Error Message', error.message);
     }
   }
+  deleteBook = async (ID) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER_KEY}books/${ID}`;
+      await axios.delete(url);
+      let updatedArray = this.state.books.filter(currentBook => currentBook._id !== ID);
+      this.setState({
+        books: updatedArray
+      });
+    } catch (error) {
+      console.log(error.response);
+    }
+  }
   updateBook = async (book) => {
     try {
       let url = `${process.env.REACT_APP_SERVER_KEY}books/${book._id}`
