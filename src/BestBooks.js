@@ -8,6 +8,7 @@ import axios from "axios";
 import React from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import BookItem from './BookItem';
+import CreateBook from "./CreateBook";
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -21,19 +22,40 @@ class BestBooks extends React.Component {
   componentDidMount() {
     this.getBooks();
   }
+  handleShowModal = () => {
+    this.setState({
+      showModal: true
+    })
+  }
+  hideModal = () => {
+    this.setState({
+      showModal: false
+    })
+  }
+
   getBooks = async () => {
     try {
       let bookData = await axios.get(`${process.env.REACT_APP_SERVER_KEY}books`);
       this.setState({ books: bookData.data });
-
+    } catch (error) {
+      console.log('Error Message', error.message);
+    }
+  }
+  addBook = async (newBook) => {
+    try {
+      let url = `${process.env.REACT_APP_SERVER_KEY}books`
+      let createdBook = await axios.post(url, newBook)
+      this.setState({
+        showModal: false,
+        books: [...this.state.books,createdBook.data]
+      });
     } catch (error) {
       console.log('Error Message', error.message);
     }
   }
   deleteBook = async (ID) => {
     try {
-      let url = `${process.env.REACT_APP_SERVER_KEY}books/${ID}`;
-      await axios.delete(url);
+      await axios.delete(`${process.env.REACT_APP_SERVER_KEY}books/${ID}`);
       let updatedArray = this.state.books.filter(currentBook => currentBook._id !== ID);
       this.setState({
         books: updatedArray
@@ -60,7 +82,7 @@ class BestBooks extends React.Component {
     return (
       <main>
         <Button onClick={this.handleShowModal}>Add New Book</Button>
-        {/* <CreateBook showModal={this.state.showModal} handleBookSubmit={this.handleBookSubmit} /> */}
+        <CreateBook showModal={this.state.showModal} hideModal={this.hideModal} addBook={this.addBook} />
         <ListGroup>
           {
             this.state.books.length > 0 &&
