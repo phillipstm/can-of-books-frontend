@@ -1,10 +1,12 @@
-import React from 'react';
+'Use strict'
 import Header from './Header';
+import React from 'react';
 import Footer from './Footer';
 import BestBooks from './BestBooks';
 import Profile from './About';
 // import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+//import { Button, Container, Form } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
   Routes,
@@ -30,7 +32,6 @@ class App extends React.Component {
               element={<Profile />}
             >
             </Route>
-            {/* PLACEHOLDER: add a route with a path of '/about' that renders the `About` component */}
           </Routes>
           <Footer />
         </Router>
