@@ -81,7 +81,6 @@ class BestBooks extends React.Component {
   render() {
     return (
       <main>
-        <Button onClick={this.handleShowModal}>Add New Book</Button>
         <CreateBook showModal={this.state.showModal} hideModal={this.hideModal} addBook={this.addBook} />
         <ListGroup>
           {
@@ -95,6 +94,7 @@ class BestBooks extends React.Component {
               />)
           }
         </ListGroup>
+        <Button onClick={this.handleShowModal} variant='success' id='add-button'>Add New Book</Button>
       </main>
 
     )

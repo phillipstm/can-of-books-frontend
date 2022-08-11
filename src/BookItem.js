@@ -9,17 +9,11 @@ class BookItem extends Component {
       showUpdate: false
     }
   }
-  showUpdate = () => {
+  toggleUpdate = () => {
     this.setState({
-      showUpdate: true
+      showUpdate: !this.state.showUpdate
     })
   }
-  hideUpdate = () => {
-    this.setState({
-      showUpdate: false
-    })
-  }
-
   deleteBookHandler = () => {
     this.props.deleteBook(this.props.book._id);
   }
@@ -33,11 +27,11 @@ class BookItem extends Component {
             <p>{this.props.book.description}</p>
             <p>Have I read this? {this.props.book.status}</p>
           </section>
-          <Button onClick={this.showUpdate}>Update</Button>
-          <Button onClick={this.deleteBookHandler}>Delete</Button>
+          <Button onClick={this.toggleUpdate}>Update</Button>
+          <Button onClick={this.deleteBookHandler} variant='danger'>Delete</Button>
         </div>
         {this.state.showUpdate &&
-          <BookUpdate book={this.props.book} updateBook={this.props.updateBook} hideUpdate={this.hideUpdate}/>
+          <BookUpdate book={this.props.book} updateBook={this.props.updateBook} toggleUpdate={this.toggleUpdate}/>
         }
       </ListGroup.Item>
     )

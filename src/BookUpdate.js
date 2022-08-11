@@ -11,7 +11,7 @@ class BookUpdate extends Component {
       _id: this.props.book._id,
       __v: this.props.book.__v
     }
-    this.props.hideUpdate();
+    this.props.toggleUpdate();
     this.props.updateBook(bookToUpdate);
   }
 
