@@ -3,7 +3,7 @@ import danielpic from './images/daniel-pic.jpeg'
 import teresapic from './images/teresa-pic.jpeg'
 
 
-class Profile extends Component {
+class About extends Component {
 
   render() {
     return (
@@ -29,4 +29,4 @@ class Profile extends Component {
     )
   }
 };
-export default Profile;
+export default About;

@@ -4,6 +4,7 @@
  * @author Teresa Phillips and Daniel Frey
  * @description Displays books.
  */
+import { withAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React from "react";
 import { Button, ListGroup } from "react-bootstrap";
@@ -35,7 +36,16 @@ class BestBooks extends React.Component {
 
   getBooks = async () => {
     try {
-      let bookData = await axios.get(`${process.env.REACT_APP_SERVER_KEY}books`);
+      const response = await this.props.auth0.getIdTokenClaims();
+      const jwt = response.__raw;
+      const config = {
+        method: 'get',
+        baseURL: process.env.REACT_APP_SERVER_KEY,
+        url: '/books',
+        headers: {"authorization": jwt}
+      }
+      let bookData = await axios(config);
+      console.log(axios(config));
       this.setState({ books: bookData.data });
     } catch (error) {
       console.log('Error Message', error.message);
@@ -100,4 +110,4 @@ class BestBooks extends React.Component {
     )
   }
 }
-export default BestBooks;
+export default withAuth0(BestBooks);
