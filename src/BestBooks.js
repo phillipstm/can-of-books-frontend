@@ -34,18 +34,20 @@ class BestBooks extends React.Component {
     })
   }
 
+  getjwt = async () => {
+    const response = await this.props.auth0.getIdTokenClaims();
+    return response.__raw;
+  }
   getBooks = async () => {
     try {
-      const response = await this.props.auth0.getIdTokenClaims();
-      const jwt = response.__raw;
+      const jwt = await this.getjwt();
       const config = {
         method: 'get',
         baseURL: process.env.REACT_APP_SERVER_KEY,
         url: '/books',
-        headers: {"authorization": jwt}
+        headers: { "authorization": jwt }
       }
       let bookData = await axios(config);
-      console.log(axios(config));
       this.setState({ books: bookData.data });
     } catch (error) {
       console.log('Error Message', error.message);
@@ -53,11 +55,18 @@ class BestBooks extends React.Component {
   }
   addBook = async (newBook) => {
     try {
-      let url = `${process.env.REACT_APP_SERVER_KEY}books`
-      let createdBook = await axios.post(url, newBook)
+      const jwt = await this.getjwt();
+      const config = {
+        method: 'post',
+        baseURL: process.env.REACT_APP_SERVER_KEY,
+        url: '/books',
+        data: newBook,
+        headers: { "authorization": jwt }
+      }
+      let createdBook = await axios(config)
       this.setState({
         showModal: false,
-        books: [...this.state.books,createdBook.data]
+        books: [...this.state.books, createdBook.data]
       });
     } catch (error) {
       console.log('Error Message', error.message);
@@ -65,7 +74,14 @@ class BestBooks extends React.Component {
   }
   deleteBook = async (ID) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_SERVER_KEY}books/${ID}`);
+      const jwt = await this.getjwt();
+      const config = {
+        method: 'delete',
+        baseURL: process.env.REACT_APP_SERVER_KEY,
+        url: `/books/${ID}`,
+        headers: { "authorization": jwt }
+      }
+      await axios(config);
       let updatedArray = this.state.books.filter(currentBook => currentBook._id !== ID);
       this.setState({
         books: updatedArray
@@ -76,9 +92,15 @@ class BestBooks extends React.Component {
   }
   updateBook = async (book) => {
     try {
-      let url = `${process.env.REACT_APP_SERVER_KEY}books/${book._id}`
-      let updatedBook = await axios.put(url, book);
-      console.log(updatedBook);
+      const jwt = await this.getjwt();
+      const config = {
+        method: 'put',
+        baseURL: process.env.REACT_APP_SERVER_KEY,
+        url: `/books/${book._id}`,
+        data: book,
+        headers: { "authorization": jwt }
+      }
+      let updatedBook = await axios(config);
       let updatedArray = this.state.books.map(currentBook => currentBook._id === updatedBook.data._id ? updatedBook.data : currentBook);
       this.setState({
         books: updatedArray
